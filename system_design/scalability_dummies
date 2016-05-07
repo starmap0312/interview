@@ -157,10 +157,12 @@
   2) written in Javam with a full Java Message Service (JMS) client
 
 # Redis list
-  1) lists of strings, sorted by insertion order
-  2) pushing new elements on the head (on the left) or on the tail (on the right) of the list
-     example:
-       LPUSH mylist a   => now the list is "a"
-       LPUSH mylist b   => now the list is "b","a"
-       RPUSH mylist c   => now the list is "b","a","c" (RPUSH was used this time)
+  1) a Redis data type
+  2) lists of strings, sorted by insertion order
+  3) pushing new elements on the head (on the left) or on the tail (on the right) of the list
+
+  example:
+    LPUSH mylist a   => now the list is "a"
+    LPUSH mylist b   => now the list is "b","a"
+    RPUSH mylist c   => now the list is "b","a","c" (RPUSH was used this time)
 
