@@ -1,0 +1,62 @@
+# Step 1: constraints and use cases (scope the problem)
+  clarify the system's constraints and the use cases that the system needs to satisfy
+  ex. design a url shortening service
+      use cases:
+        1) shortening: take a url        => return a much shorter url
+        2) redirection: take a short url => redirect to the original url
+        3) custom url
+        4) high availability of the system
+        ** advanced use cases ** 
+        5) analytics/statistics
+        6) automatic link expiration
+        7) manual link removal
+        8) UI vs. API
+      constraints:
+        1) new urls per month: 100 millions
+        2) 1 billion requests per month (1 billion = 1,000 million)
+           10% from shortening and 90% from redirection
+        3) requests per second: ~400 (40: shortens, 360: redirects)
+           shorten url: write operation, redirect url: read operation
+        4) 6 billions urls in 5 years (100 * 12 * 5 = 6,000 millions) 
+           suppose 500 bytes per url, 6 bytes per hash (i.e. hashed url => real url)
+           500 * 6 = 3,000 billion bytes = 3,000 GBs = 3 TBs for all urls over 5 years
+           6 * 6 = 36 billion bytes = 36 GBs for all hashes over 5 years
+        5) 40 shorten queries per second: new data written per second
+           40 * (500 + 6) ~= 20 KBs/sec (to database/disk)
+        6) 360 redirect queries per second: data read per second
+           360 * (500 + 6) ~= 180 KBs/sec (from database/disk)
+
+# Step 2: abstract design (sketch up an abstract design)
+  outline all the important components of your architecture and relationships between them
+  (draw a simple diagram)
+  ex.
+    abstract design
+      1) application service layer: serves the requests
+         shortening service
+         rdirection service
+      2) data storage layer: keeps track of the hash => url mapping
+         acts like a big hash table: retrieves a value given a key
+         ex. hased url = convert_to_base62(md5(real url + random salt))[:6]
+
+# Step 3: understanding bottlenecks (think about the bottlenecks)
+  think about the bottlenecks
+  ex.
+    the system may need a load balancer and many machines to handle the requests
+    the data is so huge that you need to distribute your database on multiple machines
+      (what are the downsides of doing that?)
+    is the database too slow and does it need some in-memory caching?
+    think about the trade-offs
+
+    chanlleges:
+      traffic/computation: ~400 requests per second
+        40 shorten queries per second (one hash call + one database call)
+        360 redirect queries per second (one database call)
+        these two queries are not hard for a commodity machine
+      data storage: 3 TBs over 5 years
+        40 * (500 + 6) ~= 20 KBs/sec (to database/disk)
+        360 * (500 + 6) ~= 180 KBs/sec (from database/disk)
+        this is more chanlleging, as we do not want to scan 3 TBs data for each redirect query
+
+# Step 4: scaling your abstract design (address the bottlenecks with a scalable system design)
+  make your system scalable (when the number of queries grow)
+

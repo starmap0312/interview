@@ -1,0 +1,166 @@
+# Part I: Clones
+  1) user get the same results of his request, independent of what server he lands on
+  2) every server contains exactly the saem codebase
+  3) server does not store any user related data, ex. sessions, on local disk or memory
+  4) sessions are stored in a centralized data store accessible to all servers
+     ex. an external database (ex. MySQL)
+         an external persistent cache (ex. Redis): has better performance than database
+
+# AMI: Amazon Machine Image
+  1) a special type of virtual appliance that is used to create a virtual machine within
+     the Amazon Elastic Compute Cloud ("EC2")
+  2) serves as the basic unit of deployment for services delivered using EC2
+  3) create an image file, i.e. AMI, from one of the servers
+     use the AMI as a super-clone that all new instances are based upon
+     whenever you start a new instance/clone, just do an initial deployment
+
+# Large-scale deployment
+  1) code change are sent to all servers
+  2) deployment tool: Capistrano (written in Ruby)
+     used to deploy web applications to multiple servers
+     used to run scripts on multiple servers
+     ex. deploy current changes to the web application or
+         roll back to the previous deployment state
+
+# Part II: Scalable Database Solutions
+
+# Soluiton 1: MySQL
+  master-slave replication: read from slaves, write to master (master need RAM)
+  1) sharding
+     a database shard is a horizontal partition of data in a database
+     each shard is held on a separate database server instance to spread load
+     a) some data remains present in all shards
+     b) some data only appears in a single shard
+  2) denormalization: do not use Joins in database query
+     ex.
+       a) a normalized schema
+         SELECT product_name, order_date
+         FROM orders INNER JOIN products USING(product_id)
+         WHERE product_name LIKE 'A%' ORDER BY order_date DESC
+       b) a denormalized schema: let the orders table include the product_name column as well
+         SELECT product_name, order_date
+         FROM orders
+         WHERE product_name LIKE 'A%' ORDER BY order_date DESC 
+  3) SQL tuning
+
+# Soluiton 2: NoSQL
+  use NoSQL database: MongoDB/CouchDB, easier to scale, denormalize right from the beginning
+  let the application code do the dataset-joins
+
+# Part III: Cache
+  1) a simple key-value store: reside between application and data storage
+  2) whenever application reads data, it should try to retrieve the data from cache first
+     if not in the cache, get the data from the main data source
+  3) in-memory caches: holds dataset in RAM
+     ex. Redis/Memcached
+         Redis can do several thousands of read operations per second
+         writes, especially increments, are very fast
+  4) never do file-based caching: makes cloning and auto-scaling of servers a pain
+
+# Redis
+  1) the most popular key-value database (NoSQL)
+  2) a data structure server
+  3) networked, in-memory, and stores keys with optional durability
+
+# Memcached
+  1) high-performance, distributed memory object caching system
+  2) used for speeding up dynamic web applications by alleviating database load
+  3) an in-memory key-value store for small chunks of arbitrary data (strings, objects)
+     from results of database calls, API calls, or page rendering
+  4) its API is available for most popular languages
+
+  code:
+
+    function get_foo(foo_id)
+      foo = memcached_get("foo:" . foo_id)
+      return foo if defined foo
+
+      foo = fetch_foo_from_database(foo_id)
+      memcached_set("foo:" . foo_id, foo)
+      return foo
+    end
+
+  telnet:
+
+    telnet localhost 11211
+    Trying 127.0.0.1...
+    Connected to localhost.
+    Escape character is '^]'.
+    get foo
+    VALUE foo 0 2
+
+# Redis vs. Memcached
+  Redis pros:
+    1) extra database-features of Redis: ex. persistence
+    2) built-in data structures: lists and sets
+    3) a clever key'ing: may get completly rid of database
+  Memcached pros:
+    if just need to cache, take Memcached: it scales like a charm
+
+# Pattern 1: Cached Database Queries
+  1) whenever do a query to database, store the result dataset in cache
+  2) the next time you run the query, first check if it is already in the cache
+  3) issue: expiration
+     when one piece of data changes, ex. a table cell, you need to delete all cached queries
+     that include the table cell
+
+# Pattern 2: Cached Objects (better)
+  1) view data as an object (i.e. caching classes, instances in code)
+  2) when class assembles a dataset from database, cache the complete instance of the class
+     ex. class: Product with property: data
+         data: an array containing prices, texts, and customer reviews, etc.
+               assembled by several database requests (hard to cache)
+         directly store the data array or the complete instance of the class, in the cache
+     pros:
+        you can easily get rid of the object when something changes
+        the overall operation of your code is faster and more logical
+        asynchronous processing becomes possible (let multiple servers assemble the object)
+  3) common examples of cached objects
+     a) user sessions (never use the database)
+     b) fully rendered blog articles
+     c) activity streams
+     d) user <-> friend relationships 
+
+# Part IV: Asynchronism
+  service becomes responsive, handle millions of visitors/requests
+
+# Paradigm 1: pre-computing 
+  doing the time-consuming work in advance, serving the finished work with a low request time
+  1) often, turn dynamic content into static content, i.e. pre-rendered HTML pages
+     web pages are pre-rendered and locally stored as static HTML files on every change
+     ex. a hourly cronjob that does the computing tasks
+
+# Paradigm 2: handle tasks asynchronously, have a queue of jobs that a worker can process 
+  1) used for special requests that cannot be preprocessed or for computing intensive tasks 
+  2) the server pushes the job onto a queue and immediately signals back to the user
+  3) a bunch of workers constantly check the job queue
+     if there is a new job, the worker does the job and sends a signal when the job is done
+  4) the frontend constantly checks for job-done signals and informs the user about it
+  5) async processing implementations: RabbitMQ, ActiveMQ, or a simple Redis list
+
+# Message queue
+  1) used for inter-process communication (IPC)
+     used for inter-thread communication within the same process
+  2) use a queue for messaging: the passing of control or of content
+  3) a sibling of the publisher/subscriber pattern
+     one part of a larger message-oriented middleware system
+
+# RabbitMQ
+  1) a message-oriented middleware that implements Advanced Message Queuing Protocol (AMQP)
+  2) written in Erlang
+  3) messaging enables software applications to connect and scale 
+     applications can connect to each other, as components of a larger application
+     asynchronous, decoupling applications by separating sending and receiving data
+
+# Apache ActiveMQ
+  1) open source messaging and Integration Patterns server
+  2) written in Javam with a full Java Message Service (JMS) client
+
+# Redis list
+  1) lists of strings, sorted by insertion order
+  2) pushing new elements on the head (on the left) or on the tail (on the right) of the list
+     example:
+       LPUSH mylist a   => now the list is "a"
+       LPUSH mylist b   => now the list is "b","a"
+       RPUSH mylist c   => now the list is "b","a","c" (RPUSH was used this time)
+
