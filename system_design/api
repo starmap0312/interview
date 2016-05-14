@@ -1,0 +1,109 @@
+# api: application programming interface
+  1) a set of routines, protocols, and tools for building applications
+     api expresses a software component in terms of its:
+       operations / inputs / outputs / underlying types
+     the interface definitions are independent of implementations
+       api prescribes the expected behavior, while library is the actual implementation
+  3) api may be used for a web-based system, operating system, or database system
+  4) api can assist distinct applications with sharing data (helpful for integration)
+  5) api comes in the form of:
+     libraries: specifications for routines / data structures / object classes / variables
+     specification of remote calls exposed to consumers: ex. SOAP / REST services
+  6) some examples:
+     international standards: POSIX
+     vendor documentation: Microsoft Windows API
+     libraries of programming languages: C++ Standard Template Library (STL), Java APIs
+
+# api in procedural languages
+  1) api specifies
+     a) a set of functions that accomplishes a task
+     b) a set of functions that are allowed to interact with a software component
+  2) example:
+     sqrt function (UNIX math C-library)
+
+     SYNOPSIS
+       #include <math.h>
+       double sqrt(double X);
+       float  sqrtf(float X);
+     DESCRIPTION
+       sqrt computes the positive square root of the argument. ...
+     RETURNS
+       On success, the square root is returned. If X is real and positive...
+
+  3) in this case, api is the collection of the include files used by a program to
+       reference that library function
+
+# api in object-oriented languages
+  1) an object API is a description of how objects work
+     i.e. a set of classes with an associated list of class methods
+  2) example:
+     Java Scanner class: used to read input from the user in text-based programs
+
+     (Scanner object usage)
+
+     import java.util.Scanner;
+
+     public class Test {
+       public static void main(String[] args) {
+         Scanner scanner = new Scanner("MyScanner");
+         String input = scanner.nextLine();
+         System.out.println(input);
+         inputScanner.close();
+       }
+     }
+
+     methods nextLine() and close() are the APIs for the Scanner class
+
+     public String nextLine()
+       advances this scanner past the current line and returns the skipped input...
+     Returns:
+       the line that was skipped
+     Throws:
+       NoSuchElementException - if no line found
+       IllegalStateException - if this scanner is closed
+
+  3) api includes a set of class definitions:
+     a) the public components
+        ex. the real functionality exposed, implemented as public class methods
+            other components: public fields / constants / nested objects / enums
+     b) a set of behaviors associated with the class
+        a class interface in an api may have no method at all
+        ex. Java Serializable interface
+            requires each class implementing it to behave in a serialized fashion
+            i.e. the class is based on a representation that can be saved (serialized) at any time
+
+  4) api is the collection of all the kinds of objects one can derive from the class
+       definitions, and their associated possible behaviors
+
+  5) Java JDK includes a set of APIs used by the developers to build new Java programs
+
+# api and protocols
+  1) protocols usually allow different technologies to exchange information
+     an abstraction / mediation level between the two different environments (systems)
+  2) api can be an implementation of a protocol 
+     ex: RMI is an api that implements the JRMP protocol
+  3) when an api implements a protocol, it can prescribe a language-neutral message format
+     ex. SOAP uses XML as a general container for messages to be exchanged
+
+# web api
+  used to create an open architecture for sharing content and data between applications
+  1) before, web api = web service
+  2) now, web 2.0 has been moving web api away from:
+       Simple Object Access Protocol (SOAP) based web services and 
+       Service-Oriented Architecture (SOA)
+     towards more direct 
+       Representational State Transfer (REST) web resources and
+       Resource-Oriented Architecture (ROA)
+     implementations
+       SOA: SOAP over HTTP / SOAP over JMS
+       ROA: RESTfull services, implemented as JSON over HTTP / XML over HTTP
+  3) web api allows the combination of multiple apis into new applications known as mashups
+     i.e. a web application that uses content from multiple sources to create a new service
+          displayed in a single graphical interface
+
+# api design
+  1) information hiding: divide software into modules, each of which has an interface
+     the interface / api hides the implementation details of the modules and exposes only
+       those module details that clients must know to use modules
+  2) an api should be consistent with other apis already in use in the system
+  3) api design is language- and system-dependent

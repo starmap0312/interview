@@ -7,8 +7,9 @@
          an external persistent cache (ex. Redis): has better performance than database
 
 # AMI: Amazon Machine Image
+  a (virtual) hard drive snapshot
   1) a special type of virtual appliance that is used to create a virtual machine within
-     the Amazon Elastic Compute Cloud ("EC2")
+     the Amazon Elastic Compute Cloud (EC2)
   2) serves as the basic unit of deployment for services delivered using EC2
   3) create an image file, i.e. AMI, from one of the servers
      use the AMI as a super-clone that all new instances are based upon

@@ -1,0 +1,19 @@
+# HAProxy
+
+# nginx (pronounced "engine x")
+  1) a web server
+  2) a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols
+  3) a load balancer
+  4) an HTTP cache
+
+# memcached
+
+# Redis
+
+# Lucene
+
+# RabbitMQ
+
+# Munin
+
+# NodeJS
