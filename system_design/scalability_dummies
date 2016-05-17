@@ -58,46 +58,6 @@
          writes, especially increments, are very fast
   4) never do file-based caching: makes cloning and auto-scaling of servers a pain
 
-# Redis
-  1) the most popular key-value database (NoSQL)
-  2) a data structure server
-  3) networked, in-memory, and stores keys with optional durability
-
-# Memcached
-  1) high-performance, distributed memory object caching system
-  2) used for speeding up dynamic web applications by alleviating database load
-  3) an in-memory key-value store for small chunks of arbitrary data (strings, objects)
-     from results of database calls, API calls, or page rendering
-  4) its API is available for most popular languages
-
-  code:
-
-    function get_foo(foo_id)
-      foo = memcached_get("foo:" . foo_id)
-      return foo if defined foo
-
-      foo = fetch_foo_from_database(foo_id)
-      memcached_set("foo:" . foo_id, foo)
-      return foo
-    end
-
-  telnet:
-
-    telnet localhost 11211
-    Trying 127.0.0.1...
-    Connected to localhost.
-    Escape character is '^]'.
-    get foo
-    VALUE foo 0 2
-
-# Redis vs. Memcached
-  Redis pros:
-    1) extra database-features of Redis: ex. persistence
-    2) built-in data structures: lists and sets
-    3) a clever key'ing: may get completly rid of database
-  Memcached pros:
-    if just need to cache, take Memcached: it scales like a charm
-
 # Pattern 1: Cached Database Queries
   1) whenever do a query to database, store the result dataset in cache
   2) the next time you run the query, first check if it is already in the cache
@@ -146,16 +106,9 @@
   3) a sibling of the publisher/subscriber pattern
      one part of a larger message-oriented middleware system
 
-# RabbitMQ
-  1) a message-oriented middleware that implements Advanced Message Queuing Protocol (AMQP)
-  2) written in Erlang
-  3) messaging enables software applications to connect and scale 
-     applications can connect to each other, as components of a larger application
-     asynchronous, decoupling applications by separating sending and receiving data
-
 # Apache ActiveMQ
   1) open source messaging and Integration Patterns server
-  2) written in Javam with a full Java Message Service (JMS) client
+  2) written in Java with a full Java Message Service (JMS) client
 
 # Redis list
   1) a Redis data type

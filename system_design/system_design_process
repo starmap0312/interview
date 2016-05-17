@@ -36,27 +36,55 @@
          rdirection service
       2) data storage layer: keeps track of the hash => url mapping
          acts like a big hash table: retrieves a value given a key
-         ex. hased url = convert_to_base62(md5(real url + random salt))[:6]
+         ex. hased_url = convert_to_base62(md5(real_url + random_salt))[:6]
 
 # Step 3: understanding bottlenecks (think about the bottlenecks)
-  think about the bottlenecks
-  ex.
+  bottlenecks:
     the system may need a load balancer and many machines to handle the requests
     the data is so huge that you need to distribute your database on multiple machines
       (what are the downsides of doing that?)
     is the database too slow and does it need some in-memory caching?
-    think about the trade-offs
 
-    chanlleges:
-      traffic/computation: ~400 requests per second
-        40 shorten queries per second (one hash call + one database call)
-        360 redirect queries per second (one database call)
-        these two queries are not hard for a commodity machine
-      data storage: 3 TBs over 5 years
-        40 * (500 + 6) ~= 20 KBs/sec (to database/disk)
-        360 * (500 + 6) ~= 180 KBs/sec (from database/disk)
-        this is more chanlleging, as we do not want to scan 3 TBs data for each redirect query
+  two chanlleges / bottlenecks:
+    1) traffic/computation: ~400 requests per second
+       40 shorten queries per second (one hash call + one database call)
+       360 redirect queries per second (one database call)
+       these two queries are not hard for a commodity machine
+    2) data storage: 3 TBs over 5 years
+       40 * (500 + 6) ~= 20 KBs/sec (to database/disk)
+       360 * (500 + 6) ~= 180 KBs/sec (from database/disk)
+       this is more chanlleging, as we do not want to scan 3 TBs data for each redirect query
 
 # Step 4: scaling your abstract design (address the bottlenecks with a scalable system design)
   make your system scalable (when the number of queries grow)
 
+  1) application-layer:
+
+           (requests)                     (Application Service Layer)
+     users ---------> Load Balancer ----> server
+                                    ----> server
+                                    ----> ...
+
+  2) data-storage layer:
+     billions of objects (each is small < 1K, and no relationship between objects)
+     reads are 9x more frequent than writes (360 reads, 40 writes per second)
+     3TBs of urls, 36GBs of hashes
+
+     ex. MySQL scalability solution
+     a) mature, widely used
+     b) scaling paradigms:
+        sharding
+        master-slave replication (reads from slaves, writes to master)
+        master-master replication
+     c) index lookups are fast
+
+     mappings: hashed_url -> real_url
+       hashed_url: varchar(6)
+       real_url:  varchar(512)
+
+     a) create one MySQL table with two varchar fields
+     b) create a unique index on the hash (36GB+) and hold it in memory to speed up lookups
+     c) add more RAMs to MySQL machines (vertical scaling)
+     d) partition the data: taking the first char of hashed_url mod the number of partitions
+        ex. 5 partitions: 3TB -> 600GB of url data and 36GB -> 8GB of indexes
+        

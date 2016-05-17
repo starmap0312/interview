@@ -1,19 +1,160 @@
 # HAProxy
+  1) a high availability load balancer and a proxy server for TCP and HTTP-based
+       applications that spreads requests across multiple servers
+  2) written in C (efficient in terms of processor and memory)
+  3) support HTTPS connections
+     if users connect to port 80, HAProxy can send 301 Redirect to users
 
-# nginx (pronounced "engine x")
+           (HTTP:443)         (HTTP:80)
+     users ---------> HAProxy --------> real server
+                              --------> real server
+
+     HAProxy decodes the SSL packets and forward the decoded packets to real servers
+
+# Nginx (pronounced "engine x")
   1) a web server
-  2) a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols
+  2) a reverse proxy server for HTTP/HTTPS and SMTP/POP3/IMAP protocols
   3) a load balancer
   4) an HTTP cache
 
-# memcached
+# Comparision of HAProxy and Nginx
+  HAProxy: just a load balancer/reverse proxy
+    a) TCP and HTTP proxying (SSL added from 1.5-dev12)
+    b) more rate limiting options
+  Nginx: a webserver that can also function as a reverse proxy
+    a) supports SSL directly
+    b) also a caching server
+
+# Memcached
+  1) high-performance, distributed memory object caching system
+  2) used for speeding up dynamic web applications by alleviating database load
+  3) an in-memory key-value store for small chunks of arbitrary data (strings, objects)
+     from results of database calls, API calls, or page rendering
+  4) its API is available for most popular languages
+
+  ussage:
+
+    function get_foo(foo_id)
+      foo = memcached_get("foo:" . foo_id)
+      return foo if defined foo
+
+      foo = fetch_foo_from_database(foo_id)
+      memcached_set("foo:" . foo_id, foo)
+      return foo
+    end
+
+  telnet:
+
+    telnet localhost 11211
+    Trying 127.0.0.1...
+    Connected to localhost.
+    Escape character is '^]'.
+    get foo
+    VALUE foo 0 2
 
 # Redis
+  summary:
+  1) a data structure server, the most popular key-value database
+  2) open-source, networked, in-memory, and stores keys with optional durability
+  3) NoSQL database
+  4) most languages have Redis bindings: ex. Java, C++, Python, Ruby, etc.
+  
+  data types:
+  1) maps keys to types of values
+  2) supports not only strings, but also abstract data types
+     (the key difference with other structured storage)
+     a) lists of strings
+     b) sets of strings: collections of non-repeating unsorted elements
+     c) sorted sets of strings: ordered by a floating-point number called score
+     d) hash tables: keys and values are strings
+     e) HyperLogLogs: used for approximated set cardinality size estimation
+  3) supports high-level, atomic, server-side operations
+     ex. intersection / union / difference between sets
+         sorting of lists / sets / sorted sets
+
+  persistence:
+  1) holds the whole dataset in memory
+  2) two different ways to achieve persistence
+     a) snapshotting
+        a semi-persistent durability mode where the dataset is asynchronously transferred from
+        memory to disk from time to time (in RDB dump format)
+     b) append-only file (AOF)
+        an AOF (a journal) is written when modifying the dataset in memory
+  3) Redis syncs data to the disk at least every 2 seconds
+
+  replication:
+  1) supports master-slave replication
+     data from any Redis server can replicate to any number of slaves
+  2) a slave may be a master to another slave: single-rooted replication tree
+
+  performance:
+  1) faster than database systems
+     database systems write every change to disk before considering a transaction committed
+  2) no speed difference between write and read operations
+  3) Redis operates as a single process and is single-threaded
+     a single Redis instance cannot utilize parallel execution of tasks
+
+# Redis vs. Memcached
+  Redis pros:
+    1) extra database-features of Redis: ex. persistence
+    2) built-in data structures: lists and sets
+    3) a clever key'ing: may get completly rid of database
+  Memcached pros:
+    if just need to cache, take Memcached: it scales like a charm
 
 # Lucene
+  1) a information retrieval software library, an indexing and search library
+  2) suitable for any application that requires full text indexing and searching capability
+  3) recognized for its utility in the implementation of Internet search engines and local,
+     single-site searching
 
 # RabbitMQ
+  1) a message-oriented middleware that implements Advanced Message Queuing Protocol (AMQP)
+  2) written in Erlang
+  3) messaging enables software applications to connect and scale
+     applications can connect to each other, as components of a larger application
+     asynchronous, decoupling applications by separating sending and receiving data
+
+  Python sample programs: sending and receiving messages using a queue
+
+  1) Sending: establishes a connection, sends a message and finally closes the connection
+
+     import pika
+     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+     channel = connection.channel()
+     channel.queue_declare(queue='hello')
+     channel.basic_publish(exchange='', routing_key='hello', body='Hello World!')
+     print " [x] Sent 'Hello World!'"
+     connection.close()
+
+  2) Receiving: receives messages from the queue and prints them on the screen
+
+     import pika
+     connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+     channel = connection.channel()
+     channel.queue_declare(queue='hello')
+     print ' [*] Waiting for messages. To exit press CTRL+C'
+     def callback(ch, method, properties, body):
+         print " [x] Received %r" % (body,)
+     channel.basic_consume(callback, queue='hello', no_ack=True)
+     channel.start_consuming()
 
 # Munin
+  1) monitoring software application for system, network and infrastructure
+  2) alerting services for servers, switches, applications, services, etc
+  3) a master/nodes architecture in which the master connects to all the nodes at regular
+     intervals and asks them for data. it then stores the data in RRD files, and (if needed)
+     updates the graphs
+  4) written in Perl
 
 # NodeJS
+  1) a cross-platform runtime environment for developing server-side Web applications
+  2) has an event-driven architecture capable of asynchronous I/O
+
+# real-life examples
+  1) Twitter: real time feed of the tweets by the people you are following
+  2) Google: instantly returning the pages matching any search query (Search)
+             storing and serving massive amounts of video data (YouTube)
+             aggregating the world news by topic (Google news)
+  3) Facebook: serving massive amounts of photos
+
