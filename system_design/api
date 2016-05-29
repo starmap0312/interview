@@ -107,3 +107,106 @@
        those module details that clients must know to use modules
   2) an api should be consistent with other apis already in use in the system
   3) api design is language- and system-dependent
+
+# api testing
+  common tests:
+  1) verify if the api updates data structure
+  2) verify if the api returns anything
+  3) verify the returned values of the api, based on its input conditions
+  4) verify if the api triggers other event or calls another api
+
+# SOAP: Simple Object Access Control
+  1) an XML based protocol for exchanging information between computers
+     XML is used to create the request and to parse the response
+  2) binary messaging: traditional technologies
+       Distributed Component Object Model (DCOM)
+       Common Object Request Broker Architecture (CORBA)
+     XML messaging: works better over internet
+       Simple Object Access Control (SOAP)
+  3) built-in error handling
+     if the request has a problem, the response contains error information
+     one can use the information to fix the problem
+
+# REST: Representational State Transfer
+  1) a set of functions to which the developers perform requests and receive responses
+  2) the interaction is often made via HTTP protocol
+  3) view the product data as a resource, which should contain all the required information
+  4) resources are identified by logical URLs
+
+# RESTful services
+  1) web services written by applying REST architectural concept
+     a) often use HTTP for client-server communication (REST over HTTP)
+     b) use CVS, XML, JSON, etc. as formatting language
+     c) use simple URI as the address for the services
+     d) stateless communication (server has no state)
+  2) how system resource / state of resource should be transported, ex. over HTTP protocol, to
+     a client written in different languages
+  3) a common example: map HTTP methods, GET / POST / PUT / DELETE, to CRUD operations
+     a) GET / Read
+        requests a resource at the request URL (can be cached locally or on the server)
+     b) POST / Create: sends data to the URI
+        submit information to the service for processing, return the modified or new resource
+     c) PUT / Update: puts a resource / file at the URI
+        update the resource at the request URL 
+     d) DELETE / Delete
+        removes the resource at the request URL 
+
+# SOAP vs. REST
+  1) SOAP: a protocol, through which two computers communicate by sharing XML documents
+     REST: an architectural style / design, protocol independent
+  2) SOAP: hard to use, must create the required XML structure absolutely every time
+     REST: easy to use, relying on a simple URL
+  3) SOAP response: only XML
+     REST response: CVS, JSON, RSS, etc.
+  4) SOAP: language, platform, transport independent
+           runs on HTTP but envolopes the message
+     REST: uses HTTP headers to hold meta information
+       ex. media types
+           notify server to return in JSON format (set Accept Header to application/json)
+           send data to server in JSON format (set Content-Type Header to application/json)
+           notify server to return in XML format (set Accept Header to application/xml)
+           send data to server in XML format (set Content-Type Header to application/xml)
+  5) SOAP: works well in distributed environment
+     REST: direct point-to-point communication
+  6) the degree of coupling between client and server
+     SOAP client
+        works like a custom desktop applicaiton, tightly coupled to the server
+        a rigid contract between the client and the server, and any change to either side is
+        likely to break the other
+        the client needs prior knowledge of how to use and interact with the service
+     REST client
+        works like a browser, a generic client that only knows how to use a protocol and the
+        standardized methods
+        needs no prior knowledge of the api, expect for the entry point URI and the media type
+  7) REST client can be extended by code-on-demand supplied by the server
+     ex. javascript code transfered to the client side, used to drive the interaction with
+         another service
+
+# api testing vs. unit testing
+  1) tested by QA team vs. DEV team
+  2) run after the build is ready vs. developers make sure the module pass the test before the
+     code is included in the build
+  3) blackbox testing vs. whitebox testing
+  4) the api is used by end users (external developers) vs. verify the funcationality of 
+     each unit in isolation
+
+# api document
+  1) description: brief description about what the function does
+  2) syntax: syntax about the parameter of the code, the sequence in which they occur, and
+             required / optional elements
+  3) parameters: function parameters
+  4) error messages: syntax of the error messages
+  5) example code: small snippet of code
+  6) related links: related functions
+
+# challenges of api testing
+  1) parameter selection
+  2) parameter combination
+  3) call sequencing
+
+# api test design
+  1) setup: create objects, start services, and initialize data
+  2) execution: steps to exercise api and logging
+  3) verification: evaluate execution outcome
+  4) reporting: pass, failed, or blocked
+  5) clean-up: pre-test state
