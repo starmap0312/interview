@@ -1,12 +1,12 @@
-# api: application programming interface
+# API: application programming interface
   1) a set of routines, protocols, and tools for building applications
-     api expresses a software component in terms of its:
+     API expresses a software component in terms of its:
        operations / inputs / outputs / underlying types
      the interface definitions are independent of implementations
-       api prescribes the expected behavior, while library is the actual implementation
-  3) api may be used for a web-based system, operating system, or database system
-  4) api can assist distinct applications with sharing data (helpful for integration)
-  5) api comes in the form of:
+       API prescribes the expected behavior, while library is the actual implementation
+  3) API may be used for a web-based system, operating system, or database system
+  4) API can assist distinct applications with sharing data (helpful for integration)
+  5) API comes in the form of:
      libraries: specifications for routines / data structures / object classes / variables
      specification of remote calls exposed to consumers: ex. SOAP / REST services
   6) some examples:
@@ -14,8 +14,8 @@
      vendor documentation: Microsoft Windows API
      libraries of programming languages: C++ Standard Template Library (STL), Java APIs
 
-# api in procedural languages
-  1) api specifies
+# API in procedural languages
+  1) API specifies
      a) a set of functions that accomplishes a task
      b) a set of functions that are allowed to interact with a software component
   2) example:
@@ -30,10 +30,10 @@
      RETURNS
        On success, the square root is returned. If X is real and positive...
 
-  3) in this case, api is the collection of the include files used by a program to
+  3) in this case, API is the collection of the include files used by a program to
        reference that library function
 
-# api in object-oriented languages
+# API in object-oriented languages
   1) an object API is a description of how objects work
      i.e. a set of classes with an associated list of class methods
   2) example:
@@ -44,12 +44,12 @@
      import java.util.Scanner;
 
      public class Test {
-       public static void main(String[] args) {
-         Scanner scanner = new Scanner("MyScanner");
-         String input = scanner.nextLine();
-         System.out.println(input);
-         inputScanner.close();
-       }
+         public static void main(String[] args) {
+             Scanner scanner = new Scanner("MyScanner");
+             String input = scanner.nextLine();
+             System.out.println(input);
+             inputScanner.close();
+         }
      }
 
      methods nextLine() and close() are the APIs for the Scanner class
@@ -62,70 +62,72 @@
        NoSuchElementException - if no line found
        IllegalStateException - if this scanner is closed
 
-  3) api includes a set of class definitions:
+  3) API includes a set of class definitions:
      a) the public components
         ex. the real functionality exposed, implemented as public class methods
             other components: public fields / constants / nested objects / enums
      b) a set of behaviors associated with the class
-        a class interface in an api may have no method at all
+        a class interface in an API may have no method at all
         ex. Java Serializable interface
             requires each class implementing it to behave in a serialized fashion
             i.e. the class is based on a representation that can be saved (serialized) at any time
 
-  4) api is the collection of all the kinds of objects one can derive from the class
+  4) API is the collection of all the kinds of objects one can derive from the class
        definitions, and their associated possible behaviors
 
   5) Java JDK includes a set of APIs used by the developers to build new Java programs
 
-# api and protocols
+# API and protocols
   1) protocols usually allow different technologies to exchange information
      an abstraction / mediation level between the two different environments (systems)
-  2) api can be an implementation of a protocol 
-     ex: RMI is an api that implements the JRMP protocol
-  3) when an api implements a protocol, it can prescribe a language-neutral message format
+  2) API can be an implementation of a protocol 
+     ex: RMI is an API that implements the JRMP protocol
+  3) when an API implements a protocol, it can prescribe a language-neutral message format
      ex. SOAP uses XML as a general container for messages to be exchanged
 
-# web api
+# web API
   used to create an open architecture for sharing content and data between applications
-  1) before, web api = web service
-  2) now, web 2.0 has been moving web api away from:
-       Simple Object Access Protocol (SOAP) based web services and 
-       Service-Oriented Architecture (SOA)
+  1) before, web API = web service
+  2) now, web 2.0 has been moving web API away from:
+       Simple Object Access Protocol (SOAP) based web services and Service-Oriented Architecture (SOA)
      towards more direct 
-       Representational State Transfer (REST) web resources and
-       Resource-Oriented Architecture (ROA)
+       Representational State Transfer (REST) web resources and Resource-Oriented Architecture (ROA)
      implementations
+     ex.
        SOA: SOAP over HTTP / SOAP over JMS
        ROA: RESTfull services, implemented as JSON over HTTP / XML over HTTP
-  3) web api allows the combination of multiple apis into new applications known as mashups
+
+  3) web API allows the combination of multiple APIs into new applications known as mashups
      i.e. a web application that uses content from multiple sources to create a new service
           displayed in a single graphical interface
 
-# api design
-  1) information hiding: divide software into modules, each of which has an interface
-     the interface / api hides the implementation details of the modules and exposes only
-       those module details that clients must know to use modules
-  2) an api should be consistent with other apis already in use in the system
-  3) api design is language- and system-dependent
+  4) SOA (service-oriented) vs. ROA (resource-oriented)
 
-# api testing
-  common tests:
-  1) verify if the api updates data structure
-  2) verify if the api returns anything
-  3) verify the returned values of the api, based on its input conditions
-  4) verify if the api triggers other event or calls another api
+     a SOA service usually involves more processing (ex. delivering a photo or resizing a photo)
+       focusing on interfaces and use terms like method, operation, etc., and is related to RPC-style
+       independent of the technical architecture, i.e. it can be REST/HTTP applications
 
-# SOAP: Simple Object Access Control
+     a ROA resource usually refers to static data (ex. photo)
+       emphasizing on HTTP objects that respond to standard HTTP methods (GET/PUT/UPDATE/DELETE)
+       not independent of the technical architecture, so it is less general than SOA
+
+     ex. a SOA service (works as a Facade)
+         uses external services, supplying them with parameters, and combining the results for the user
+     ex. a ROA resource
+         retreives static resources (uses external resources as input) and then processing internally
+
+     (ambiguity: Flickr is a service that provides photo, but can also be seen as a resource of photo)
+
+# SOAP: Simple Object Access Protcol
   1) an XML based protocol for exchanging information between computers
      XML is used to create the request and to parse the response
-  2) binary messaging: traditional technologies
-       Distributed Component Object Model (DCOM)
-       Common Object Request Broker Architecture (CORBA)
+  2) Binary messaging: traditional technologies
+       ex. Distribute Component Object Model (DCOM)
+       ex. Common Object Request Broker Architecture (CORBA)
      XML messaging: works better over internet
-       Simple Object Access Control (SOAP)
+       ex. SOAP
   3) built-in error handling
      if the request has a problem, the response contains error information
-     one can use the information to fix the problem
 
 # REST: Representational State Transfer
   1) a set of functions to which the developers perform requests and receive responses
@@ -177,20 +179,18 @@
      REST client
         works like a browser, a generic client that only knows how to use a protocol and the
         standardized methods
-        needs no prior knowledge of the api, expect for the entry point URI and the media type
+        needs no prior knowledge of the API, expect for the entry point URI and the media type
   7) REST client can be extended by code-on-demand supplied by the server
      ex. javascript code transfered to the client side, used to drive the interaction with
          another service
 
-# api testing vs. unit testing
-  1) tested by QA team vs. DEV team
-  2) run after the build is ready vs. developers make sure the module pass the test before the
-     code is included in the build
-  3) blackbox testing vs. whitebox testing
-  4) the api is used by end users (external developers) vs. verify the funcationality of 
-     each unit in isolation
+# API design
+  1) information hiding: divide software into modules, each of which has an interface
+     hides the implementation details of the modules and exposes only those that clients must know
+  2) an API should be consistent with other APIs already in use in the system
+  3) API design is language- and system-dependent
 
-# api document
+# API document
   1) description: brief description about what the function does
   2) syntax: syntax about the parameter of the code, the sequence in which they occur, and
              required / optional elements
@@ -199,14 +199,27 @@
   5) example code: small snippet of code
   6) related links: related functions
 
-# challenges of api testing
+# API testing
+  common tests:
+  1) verify if the API updates data structure (resource update)
+  2) verify if the API returns anything (resource read)
+  3) verify the returned values of the API, based on its input conditions (resource read)
+  4) verify if the API triggers other event or calls another API (service)
+
+# API testing vs. unit testing
+  1) test by QA team vs. test by DEV team
+  2) test after each new build is ready vs. test before the code is included in the build
+  3) blackbox testing vs. whitebox testing
+  4) used by end users (external developers) vs. test funcationality of each unit in isolation
+
+# challenges of API testing
   1) parameter selection
   2) parameter combination
   3) call sequencing
 
-# api test design
+# API test design
   1) setup: create objects, start services, and initialize data
-  2) execution: steps to exercise api and logging
+  2) execution: steps to exercise API and logging
   3) verification: evaluate execution outcome
   4) reporting: pass, failed, or blocked
   5) clean-up: pre-test state

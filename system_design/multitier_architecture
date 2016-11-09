@@ -9,8 +9,8 @@
      b) application processing / domain logic tier (C)
         coordinates application, processes commands, makes logical decisions, evaluations
         moves and processes data between the other two layers
-        ex. Ruby on Rails / Java EE / ASP.NET / PHP / Perl / Python / NodeJS
+        ex. Ruby on Rails / Java EE / ASP.NET / PHP / Perl / Python Django / NodeJS
      c) data management / data storage tier (M)
         stores and retrieves information from a database or filesystem
   4) allow any of the tiers to be upgraded or replaced independently
-  5) data transfer between tiers: SNMP / CORBA / JAVA RMI / sockets / UDP / web services
+  5) data transfer between tiers: SNMP / CORBA / JAVA RMI / sockets / UDP / web services (ex. SOAP/REST)

@@ -158,3 +158,37 @@
              aggregating the world news by topic (Google news)
   3) Facebook: serving massive amounts of photos
 
+# ATS server: Apache traffic server
+  1) a modular, high-performance reverse proxy and forward proxy server
+     forward proxy: an intermediary for its associated clients to contact any server
+     reverse proxy: an intermediary for its associated servers to be contacted by any client
+       clients  <-> forward proxy -> internet <-> reverse proxy <-> servers
+  2) comparable to Nginx and Squid
+     Squid: a caching, forwarding, and reverse web proxy
+            (caching repeated requests, caching network lookups: ex. DNS, filtering traffic)
+     Nginx: a reverse proxy server for HTTP, HTTPS, SMTP, POP3, and IMAP protocols, and
+            a load balancer and an HTTP cache
+  3) URL Remapping Config File
+     a) Rewrite a URL (from the client) before sending it to the Origin Server
+     b) Protect the proxy server, to only allow certain requests
+  4) types of mappings
+     a) map: requests that match the client-URL are rewritten into the origin-server-URL
+             the user agent will see the page on the remapped URL, but will not be notified of
+             the address change
+        ex. map http://www.example.com/ http://server1.example.com/
+            map https://www.example.com/ http://127.0.0.1:8080/
+     b) reverse_map: used to rewrite location headers sent by the origin server
+                     the 'redirect' mapping creates a permanent redirect message and informs
+                     the browser of the URL change
+        ex. reverse_map http://server1.example.com/ http://www.example.com/
+     c) redirect: permanently redirect users
+        ex. redirect http://www.oldserver.com/ http://www.newserver.com/
+
+# Ganglia Monitoring System
+  1) a scalable distributed monitoring system for high-performance computing systems such as
+     clusters and Grids
+  2) based on a hierarchical design targeted at federations of clusters
+  3) leverages widely used technologies such as XML for data representation, XDR for compact,
+     portable data transport, and RRDtool for data storage and visualization
+  4) achieve very low per-node overheads and high concurrency
+
