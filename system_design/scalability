@@ -125,7 +125,7 @@
                                                                        |-----> MySQL slave
                                                                        |-----> MySQL slave
 
-# horizontal partitioning vs. vertical partitioning (database sharding)
+# horizontal partitioning (sharding) vs. vertical partitioning
   1) horizontal partitioning: row-wise (sharding) 
      dividing different rows into different tables
      (i.e. replicating the schema, and then dividing the data based on a shard key)
