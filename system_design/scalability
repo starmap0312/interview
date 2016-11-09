@@ -143,11 +143,9 @@
          performance improved when accessing only static data
          creat a view across two tables to restore the original table with a performance penalty
 
-# using NoSQL instead of scaling a relational database
-
-# being asynchronous
-
-# two major bottlenecks
-  1) handling a lot of users
-  2) handling a lot of data
+# scaling issues
+  1) using NoSQL instead of scaling a relational database
+     easier to scale, denormalize right from the beginning
+  2) being asynchronous
+  3) two major bottlenecks: handling a lot of users, and handling a lot of data
 
