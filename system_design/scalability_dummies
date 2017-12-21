@@ -118,3 +118,23 @@
   2) use a queue for messaging: the passing of control or of content
   3) a sibling of the publisher/subscriber pattern
      one part of a larger message-oriented middleware system
+
+# Apache Kafka vs. RabbitMQ
+  1) Kafka is a log, your writes are appended to the tail, but you can read from where you want, whereas
+     RabbitMQ is queue FIFO (reading from the HEAD and processing one by one)
+  2) Kafka is truly distributed: data is sharded, replicated, durability guarantees can be tuned, availability can be tuned, whereas
+     RabbitMQ has limited support for the above
+
+# Apache Kafka vs. Apache Storm
+  1) Kafka: Distributed messaging system
+     Storm: Real Time Message Processing
+  2) Kafka is a distributed and robust queue, whereas
+     Storm is not a queue
+  3) Kafka can handle high volume real-time data, serving as a buffer/queue: it enables you to pass messages from one endpoint to another
+     Storm is a system that has distributed real time processing abilities : it executes all kind of manipulations on real time data in parallel
+  
+  common data flow:
+    real-time-system --> Kafka (Queue) --> Storm (Parallel Processing) --> NoSql (Persistent Indexed Storage) --> Bussiness Intelligence (optional)
+  a) your real time app handling high volume data, sends it to Kafka queue
+  b) Storm pulls the data from Kafka and applies some required manipulation
+  c) the data is then stored to some NoSql DB for additional BI calculations (or simply queried by other systems)
