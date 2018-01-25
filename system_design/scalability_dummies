@@ -133,8 +133,67 @@
   3) Kafka can handle high volume real-time data, serving as a buffer/queue: it enables you to pass messages from one endpoint to another
      Storm is a system that has distributed real time processing abilities : it executes all kind of manipulations on real time data in parallel
   
-  common data flow:
+  common use case/data flow:
     real-time-system --> Kafka (Queue) --> Storm (Parallel Processing) --> NoSql (Persistent Indexed Storage) --> Bussiness Intelligence (optional)
   a) your real time app handling high volume data, sends it to Kafka queue
   b) Storm pulls the data from Kafka and applies some required manipulation
   c) the data is then stored to some NoSql DB for additional BI calculations (or simply queried by other systems)
+
+# Apache Storm vs. Akka
+  Both systems scale very well and can handle large amounts of data
+  1) Storm is a distributed, real-time computation system
+       on a Storm cluster, you execute topologies, which process streams of tuples (data)
+       each topology is a graph consisting of spouts (which produce tuples) and bolts (which transform tuples)
+       Storm takes care of cluster communication, fail-over and distributing topologies across cluster nodes
+     Akka is a toolkit for building distributed, concurrent, fault-tolerant applications
+       in an Akka application, the basic construct is an actor
+       Actors process messages asynchronously, and each actor instance is guaranteed to be run using at most one thread at a time, making concurrency much easier
+       Actors can also be deployed remotely
+       there’s a clustering module, which will handle automatic fail-over and distribution of actors across cluster nodes
+  2) Storm's basic unit of data is a "tuple"
+       a tuple can have any number of elements, and each tuple element can be any object, as long as there is a serializer for it
+     Akka's basic unit is a "message"
+       a message can be any object and should be serializable as well (for sending it to remote actors)
+  3) Storm's basic unit of computation are "bolts" and "spouts"
+       a bolt can be any piece of code, which does arbitrary processing on the incoming tuples
+       a bolt can store some mutable data, ex. to accumulate results
+       a bolt runs in a single thread, so you do not have to worry about concurrent access to the bolt's data
+     Akka's basic unit of computation are "actors"
+  4) Actors & Bolts: Similarities
+     i)  Both bolts and actors are expected to do some processing basing on the data received
+         bolts can receive arbitrary tuples, and actors can receive arbitrary messages
+     ii) Both bolts and actors have internal state
+         their internal state is private and protected from concurrent thread access
+  5) Actors & Bolts: Differences
+     i)   how actors and bolts communicate:
+          Storm is only one-way and cannot send back messages
+            note: Bolts "ack" messages, which is a form of communication, to the ackers
+            note: you can send a tuple to a named channel (stream), i.e. broadcast the tuple (message) to all listeners
+          Actor can send a message to any other actor, as long as it has the ActorRef (and if not, an actor can be looked up by-name)
+            ex. actor can send back a reply to the sender of the message that is being handled
+     ii)  routing (random/hashing vs. multiple options):
+          in Storm, multiple copies of a bolt/sprout code can be run in parallel (depending on the parallelism setting)
+            tuples can be routed to bolt instances (in random, or by consistent hashing on a field)
+          in Akka, the above result can be achieved by using a set of (potentially remote) actors with a load-balancer actor in front of them
+            the above can be achieved by using router option of round robin, or consistent hashing on the message
+     iii) weights (dedicated thread vs. shared threads):
+          in Storm, the expected number of bolts is significantly smaller (a design decision)
+            each bolt instance tends to have a dedicated thread
+          in Akka, it is normal to have lots of actors (up to millions)
+            actors typically share threads
+     iv)  layout of the communication:
+          in Storm, the topology is static and defined upfront
+          in Akka, the communication patterns can change over time and can be dynamic
+          actors can send messages to any other actors, or can even send addresses (ActorRefs)
+      v) overall:
+         Storm implements a specific range of usages
+         Akka is more of a general-purpose toolkit
+         i.e. it would be possible to build a Storm-like system on top of Akka, but not the other way round
+  6) Other features:
+     i) Storm has a crucial feature of "guaranteed message delivery"
+        it tracks the whole tree of tuples that originate from any tuple produced by a sprout
+        if not all tuples aren acknowledged, the tuple will be "replayed"
+    ii) Storm's cluster management is more advanced
+        it uses Zookeeper for automatic "fail-over", automatic "balancing" of workers across the cluster
+        Akka is also developing more advanced clustering module 
+
