@@ -140,7 +140,8 @@
   c) the data is then stored to some NoSql DB for additional BI calculations (or simply queried by other systems)
 
 # Apache Storm vs. Akka
-  Both systems scale very well and can handle large amounts of data
+  open source frameworks for distributed parallel and concurrent programming
+  both systems scale very well and can handle large amounts of data
   1) Storm is a distributed, real-time computation system
        on a Storm cluster, you execute topologies, which process streams of tuples (data)
        each topology is a graph consisting of spouts (which produce tuples) and bolts (which transform tuples)
@@ -189,11 +190,10 @@
          Storm implements a specific range of usages
          Akka is more of a general-purpose toolkit
          i.e. it would be possible to build a Storm-like system on top of Akka, but not the other way round
-  6) Other features:
-     i) Storm has a crucial feature of "guaranteed message delivery"
-        it tracks the whole tree of tuples that originate from any tuple produced by a sprout
-        if not all tuples aren acknowledged, the tuple will be "replayed"
-    ii) Storm's cluster management is more advanced
-        it uses Zookeeper for automatic "fail-over", automatic "balancing" of workers across the cluster
-        Akka is also developing more advanced clustering module 
+     vi) Storm has a crucial feature of "guaranteed message delivery"
+         it tracks the whole tree of tuples that originate from any tuple produced by a sprout
+         if not all tuples aren acknowledged, the tuple will be "replayed"
+    vii) Storm's cluster management is more advanced
+         it uses Zookeeper for automatic "fail-over", automatic "balancing" of workers across the cluster
+         Akka is also developing more advanced clustering module 
 
