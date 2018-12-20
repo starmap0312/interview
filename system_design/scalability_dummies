@@ -140,8 +140,8 @@
   c) the data is then stored to some NoSql DB for additional BI calculations (or simply queried by other systems)
 
 # Apache Storm vs. Akka
-  open source frameworks for distributed parallel and concurrent programming
-  both systems scale very well and can handle large amounts of data
+  storm and akka are both open source frameworks for distributed parallel and concurrent programming
+    both systems scale very well and can handle large amounts of data
   1) Storm is a distributed, real-time computation system
        on a Storm cluster, you execute topologies, which process streams of tuples (data)
        each topology is a graph consisting of spouts (which produce tuples) and bolts (which transform tuples)
